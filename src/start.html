@@ -43,7 +43,6 @@
 
     //设置台风颜色
     function setTyphoonColor(typhoonPower) {
-
         switch (typhoonPower) {
             case 0:
                 powerColor = 'blue';
@@ -138,7 +137,8 @@
         {'lng': 117.4, 'lat': 17.1, 'date': 1949012418, 'power': 0},
         {'lng': 117.3, 'lat': 17.5, 'date': 1949012500, 'power': 0},
     ];
-    //设置台风颜色
+
+    //对台风数据中的每个点都在地图上进行设置
     for (var i = 0; i < Carmen_path.length; i++) {
         var powercolor = setTyphoonColor(Carmen_path[i].power);
         var circle = L.circle([Carmen_path[i].lat, Carmen_path[i].lng], 30000, {
