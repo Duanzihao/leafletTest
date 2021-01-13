@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<script>
+    $.getJSON('Carmen.json', function(data){
+        for (var i = 0; i < data.rows.length; i++) {
+            $('#test').append('<p>' + data.rows[i].power + '</p>');
+        }
+    });
+</script>
+</body>
+</html>
