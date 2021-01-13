@@ -34,11 +34,49 @@
             .setContent("你点击在了地图的 " + e.latlng.toString())
             .openOn(mymap);
     }
+
     //点击图中的台风点圈，显示相应的台风信息
     function circleClick(e) {
         var clickedCircle = e.target;
-        clickedCircle.bindPopup("<br>台风的信息:</br>"+"<br>时间：2001</br>").openPopup();
+        clickedCircle.bindPopup("<br>台风的信息:</br>" + "<br>时间：2001</br>").openPopup();
     }
+
+    //设置台风颜色
+    function setTyphoonColor(typhoonPower) {
+
+        switch (typhoonPower) {
+            case 0:
+                powerColor = 'blue';
+                break;
+            case 1:
+                powerColor = 'green';
+                break;
+            case 2:
+                powerColor = 'green';
+                break;
+            case 3:
+                powerColor = 'yellow';
+                break;
+            case 4:
+                powerColor = 'orange';
+                break;
+            case 5:
+                powerColor = 'purple';
+                break;
+            case 6:
+                powerColor = 'red';
+                break;
+            case 9:
+                powerColor = 'black';
+                break;
+            default:
+                powerColor = 'white';
+                break;
+        }
+        return powerColor;
+    }
+
+    //地图初始化
     var mymap = L.map('mapid').setView([39.92, 116.46], 3);
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -100,34 +138,9 @@
         {'lng': 117.4, 'lat': 17.1, 'date': 1949012418, 'power': 0},
         {'lng': 117.3, 'lat': 17.5, 'date': 1949012500, 'power': 0},
     ];
-    var powercolor = '';
+    //设置台风颜色
     for (var i = 0; i < Carmen_path.length; i++) {
-        switch (Carmen_path[i].power) {
-            case 0:
-                powercolor = 'blue';
-                break;
-            case 1:
-                powercolor = 'green';
-                break;
-            case 2:
-                powercolor = 'green';
-                break;
-            case 3:
-                powercolor = 'yellow';
-                break;
-            case 4:
-                powercolor = 'orange';
-                break;
-            case 5:
-                powercolor = 'purple';
-                break;
-            case 6:
-                powercolor = 'red';
-                break;
-            case 9:
-                powercolor = 'black';
-                break;
-        }
+        var powercolor = setTyphoonColor(Carmen_path[i].power);
         var circle = L.circle([Carmen_path[i].lat, Carmen_path[i].lng], 30000, {
             color: powercolor,
             fillColor: powercolor,
