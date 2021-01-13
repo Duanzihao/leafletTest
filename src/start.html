@@ -37,7 +37,7 @@
     //点击图中的台风点圈，显示相应的台风信息
     function circleClick(e) {
         var clickedCircle = e.target;
-        clickedCircle.bindPopup("台风的信息（显示测试）").openPopup();
+        clickedCircle.bindPopup("<br>台风的信息:</br>"+"<br>时间：2001</br>").openPopup();
     }
     var mymap = L.map('mapid').setView([39.92, 116.46], 3);
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
