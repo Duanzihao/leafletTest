@@ -34,7 +34,11 @@
             .setContent("你点击在了地图的 " + e.latlng.toString())
             .openOn(mymap);
     }
-
+    //点击图中的台风点圈，显示相应的台风信息
+    function circleClick(e) {
+        var clickedCircle = e.target;
+        clickedCircle.bindPopup("台风的信息（显示测试）").openPopup();
+    }
     var mymap = L.map('mapid').setView([39.92, 116.46], 3);
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -129,7 +133,7 @@
             fillColor: powercolor,
             fillOpacity: 0.5,
             radius: 500
-        }).addTo(mymap);
+        }).addTo(mymap).on("click", circleClick);
         var popup = L.popup()
             .setLatLng([Carmen_path[i].lat, Carmen_path[i].lng])
             .setContent("台风名称：CARMEN，台风强度：" + Carmen_path[i].power)
