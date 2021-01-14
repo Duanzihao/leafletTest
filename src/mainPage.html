@@ -158,6 +158,7 @@
             _power: Carmen_path[i].power
         };
         pointList.push(point);
+        //向地图中画线
         if (i !== 0) {
             var polygon = L.polygon([
                     [Carmen_path[i].lat, Carmen_path[i].lng],
