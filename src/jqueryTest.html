@@ -7,11 +7,12 @@
 </head>
 <body>
 <script>
-    $.getJSON('Carmen.json', function(data){
-        for (var i = 0; i < data.rows.length; i++) {
-            $('#test').append('<p>' + data.rows[i].power + '</p>');
-        }
+    var Carmen_path = [];
+    $.getJSON("../data/Carmen.json", function(json) {
+        // console.log(json); // this will show the info it in firebug console
+        Carmen_path = new Array(json);
     });
+    console.log(Carmen_path);
 </script>
 </body>
 </html>
