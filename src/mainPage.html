@@ -144,13 +144,23 @@
     var pointList = [];
     //对台风数据中的每个点都在地图上进行设置
     for (var i = 0; i < Carmen_path.length; i++) {
+        var power = Carmen_path[i].power;
+        var time = Carmen_path[i].date;
         var powercolor = setTyphoonColor(Carmen_path[i].power);
         var circle = L.circle([Carmen_path[i].lat, Carmen_path[i].lng], 30000, {
             color: powercolor,
             fillColor: powercolor,
             fillOpacity: 0.5,
             radius: 500
-        }).addTo(mymap).on("click", circleClick);
+        }).addTo(mymap).on("click", function (e) {
+            var clickedCircle = e.target;
+            clickedCircle.bindPopup(
+                "<br>台风的信息:</br>" +
+                "<br>位置：" + e.latlng + "</br>"+
+                "<br>时间：" + time + "</br>"+
+                "<br>强度：" + power + "</br>"
+            ).openPopup();
+        });
         var point = {
             index: i,
             _circle: circle,
