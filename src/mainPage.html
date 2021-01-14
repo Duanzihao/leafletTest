@@ -37,8 +37,12 @@
 
     //点击图中的台风点圈，显示相应的台风信息
     function circleClick(e) {
+        console.log(e);
         var clickedCircle = e.target;
-        clickedCircle.bindPopup("<br>台风的信息:</br>" + "<br>时间：2001</br>").openPopup();
+        clickedCircle.bindPopup(
+            "<br>台风的信息:</br>" +
+            "<br>位置：" + e.latlng + "</br>"
+        ).openPopup();
     }
 
     //设置台风颜色
