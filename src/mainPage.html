@@ -60,6 +60,7 @@
     <button id="run" onclick="start()">run</button>
     <button id="stop" onclick="stop()">stop</button>
     <button id="pause" onclick="pause()">pause</button>
+    <button id="displayTyphoonPath" onclick="displayTyphoonPath()">播放台风路径</button>
 </div>
 <script>
     //设置台风颜色
@@ -96,15 +97,37 @@
         return powerColor;
     }
 
+    //设置播放台风路径动画
+    function displayTyphoonPath(selectedTyphoon) {
+        ;
+    }
+
+    //选择要播放的台风
+    function selectedTyphoon(userSelected) {
+        ;
+    }
+
+    function mapInit() {
+        var mymap = L.map('mapid').setView([39.92, 116.46], 3);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiZHVhbnppaGFvIiwiYSI6ImNranZkNDZwNjA3dTIycG9hbjR6dGh5c3UifQ.ROEqcBmPSbuqfBW6AQZrYg'
+        }).addTo(mymap);
+        return mymap;
+    }
+    var mymap = mapInit();
     //地图初始化
-    var mymap = L.map('mapid').setView([39.92, 116.46], 3);
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: 'pk.eyJ1IjoiZHVhbnppaGFvIiwiYSI6ImNranZkNDZwNjA3dTIycG9hbjR6dGh5c3UifQ.ROEqcBmPSbuqfBW6AQZrYg'
-    }).addTo(mymap);
+    // var mymap = L.map('mapid').setView([39.92, 116.46], 3);
+    // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    //     id: 'mapbox/streets-v11',
+    //     tileSize: 512,
+    //     zoomOffset: -1,
+    //     accessToken: 'pk.eyJ1IjoiZHVhbnppaGFvIiwiYSI6ImNranZkNDZwNjA3dTIycG9hbjR6dGh5c3UifQ.ROEqcBmPSbuqfBW6AQZrYg'
+    // }).addTo(mymap);
 
     var myTyphoonPath = undefined;
 
@@ -154,7 +177,7 @@
                     {
                         color: 'black'
                     }).addTo(mymap);
-                
+
             }
         }
 
