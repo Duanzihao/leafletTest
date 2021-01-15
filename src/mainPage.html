@@ -62,15 +62,6 @@
     <button id="pause" onclick="pause()">pause</button>
 </div>
 <script>
-    //点击图中的台风点圈，显示相应的台风信息
-    function circleClick(e) {
-        var clickedCircle = e.target;
-        clickedCircle.bindPopup(
-            "<br>台风的信息:</br>" +
-            "<br>位置：" + e.latlng + "</br>"
-        ).openPopup();
-    }
-
     //设置台风颜色
     function setTyphoonColor(typhoonPower) {
         switch (typhoonPower) {
@@ -115,12 +106,12 @@
         accessToken: 'pk.eyJ1IjoiZHVhbnppaGFvIiwiYSI6ImNranZkNDZwNjA3dTIycG9hbjR6dGh5c3UifQ.ROEqcBmPSbuqfBW6AQZrYg'
     }).addTo(mymap);
 
-    var Carmen_path = undefined;
+    var myTyphoonPath = undefined;
 
     $.getJSON("../data/Carmen.json", function (json) {
         // console.log(json); // this will show the info it in firebug console
-        Carmen_path = json.rows;
-        console.log(Carmen_path);
+        myTyphoonPath = json.rows;
+        console.log(myTyphoonPath);
         onCarmenPathDataUpdated();
     });
 
@@ -128,12 +119,12 @@
         //台风点序列：用于存储台风的相关信息，由于leaflet很多传参不好实现，使用全局变量的方式进行变量的读取
         var pointList = [];
         //对台风数据中的每个点都在地图上进行设置
-        for (var i = 0; i < Carmen_path.length; i++) {
-            var power = Carmen_path[i].power;
-            var time = Carmen_path[i].date;
-            var powercolor = setTyphoonColor(Carmen_path[i].power);
+        for (var i = 0; i < myTyphoonPath.length; i++) {
+            // var power = myTyphoonPath[i].power;
+            // var time = myTyphoonPath[i].date;
+            var powercolor = setTyphoonColor(myTyphoonPath[i].power);
 
-            var circle = L.circle([Carmen_path[i].lat, Carmen_path[i].lng], 30000, {
+            var circle = L.circle([myTyphoonPath[i].lat, myTyphoonPath[i].lng], 30000, {
                 color: powercolor,
                 fillColor: powercolor,
                 fillOpacity: 0.5,
@@ -146,23 +137,24 @@
                     "<br>时间：" + this.date + "</br>" +
                     "<br>强度：" + this.power + "</br>"
                 ).openPopup();
-            }, Carmen_path[i]);
+            }, myTyphoonPath[i]);
             var point = {
                 index: i,
                 _circle: circle,
-                _time: Carmen_path[i].date,
-                _power: Carmen_path[i].power
+                _time: myTyphoonPath[i].date,
+                _power: myTyphoonPath[i].power
             };
             pointList.push(point);
             //向地图中画线
             if (i !== 0) {
                 const polygon = L.polygon([
-                        [Carmen_path[i].lat, Carmen_path[i].lng],
-                        [Carmen_path[i - 1].lat, Carmen_path[i - 1].lng]
+                        [myTyphoonPath[i].lat, myTyphoonPath[i].lng],
+                        [myTyphoonPath[i - 1].lat, myTyphoonPath[i - 1].lng]
                     ],
                     {
                         color: 'black'
                     }).addTo(mymap);
+                
             }
         }
 
@@ -176,7 +168,6 @@
             .setContent("你点击在了地图的 " + e.latlng.toString())
             .openOn(mymap);
     });
-
 </script>
 </body>
 </html>
