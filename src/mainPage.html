@@ -196,10 +196,10 @@ $.getJSON("../data/1949/Della.json", function (json) {
     // console.log(json); // this will show the info it in firebug console
     myTyphoonPath = json.rows;
     console.log(myTyphoonPath);
-    onCarmenPathDataUpdated();
+    onTyphoonPathDataUpdated();
 });
 
-function onCarmenPathDataUpdated() {
+function onTyphoonPathDataUpdated() {
     //台风点序列：用于存储台风的相关信息，由于leaflet很多传参不好实现，使用全局变量的方式进行变量的读取
     var pointList = [];
     //对台风数据中的每个点都在地图上进行设置
