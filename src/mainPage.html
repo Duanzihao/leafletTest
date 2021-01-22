@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
+    <!--    <script src="../js/getFilesName.js"></script>-->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
@@ -15,41 +16,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../lib/leaflet/leaflet.css"/>
     <script src="../lib/leaflet/leaflet.js"></script>
+    <script src="../lib/require.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+    }
 
-        html, body {
-            height: 100%;
-        }
+    html, body {
+        height: 100%;
+    }
 
-        #mapid {
-            width: 100%;
-            height: 100%;
-        }
+    #mapid {
+        width: 100%;
+        height: 100%;
+    }
 
-        .input-card {
-            z-index: 10000000000;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            word-wrap: break-word;
-            background-color: #fff;
-            background-clip: border-box;
-            /*border-radius: .25rem;*/
-            width: 8rem;
-            border-width: 0;
-            /*border-radius: 0.4rem;*/
-            box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            -ms-flex: 1 1 auto;
-            flex: 1 1 auto;
-            padding: 0.75rem 1.25rem;
-        }
+    .input-card {
+        /*height: 10rem;*/
+        z-index: 10000000000;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        /*border-radius: .25rem;*/
+        width: 20rem;
+        border-width: 0;
+        /*border-radius: 0.4rem;*/
+        box-shadow: 0 6px 18px 0 rgba(114, 124, 245, .5);
+        position: fixed;
+        bottom: 4rem;
+        right: 4rem;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 0.75rem 1.25rem;
+    }
     </style>
 
 
@@ -61,143 +64,194 @@
     <button id="stop" onclick="stop()">stop</button>
     <button id="pause" onclick="pause()">pause</button>
     <button id="displayTyphoonPath" onclick="displayTyphoonPath()">播放台风路径</button>
-    <label for="myYear"></label>
-    <select id="myYear"></select>
+    <label for="targetYear"></label><select id="targetYear"></select>
+    <label for="targetTyphoon"></label><select id="targetTyphoon"></select>
 </div>
 <script>
-    window.onload = function () {
-//设置年份的选择
-        var myDate = new Date();
-        var startYear = myDate.getFullYear() - 50;//起始年份
-        var endYear = myDate.getFullYear() + 50;//结束年份
-        var obj = document.getElementById('myYear')
-        for (var i = startYear; i <= endYear; i++) {
-            obj.options.add(new Option(i, i));
-        }
-        obj.options[obj.options.length - 51].selected = 1;
+window.onload = function () {
+    //设置年份的选择
+    var myDate = new Date();
+    var startYear = myDate.getFullYear() - 50;//起始年份
+    var endYear = myDate.getFullYear() + 50;//结束年份
+    var obj = document.getElementById('targetYear')
+    for (var i = startYear; i <= endYear; i++) {
+        obj.options.add(new Option(i, i));
     }
+    obj.options[obj.options.length - 51].selected = 1;
+}
+</script>
+
+<script>
+var promises = require('fs/promises')
+var fs = require('C:\\Users\\lenovo\\AppData\\Roaming\\JetBrains\\WebStorm2020.3\\javascript\\nodejs\\14.15.4\\core-modules\\fs.js')
+// 本脚本用于处理点击到的台风的信息
+var clickVal = 1;
+var targetYear = 0;
+$("#targetYear").click(function (e) {
+    // console.log(e);
+    var clickTarget = $('#targetYear option:selected').val();
+    clickVal = clickVal * (-1);
+    if (clickVal === 1) {
+        //此时表明是用户真正想选择的年份
+        targetYear = clickTarget;
+        // 之后获取相关台风的名称
+        var dirPath = "../data/" + targetYear + "/";
+        // require(['fs'], function (fs) {
+        // var files = getFilesName(dirPath);
+        // console.log(files);
+        // })
+
+
+        // define(
+        //     function (require) {
+        //         var fs = require('fs');
+        //     }
+        // );
+        // var fs = require('fs');
+        // var files = fs.readdirSync(dirPath);
+        // console.log(files);
+
+
+        // var fs = require('fs');
+        // var files = fs.readdirSync(dirPath);
+        // $.getJSON("../data/1949/Della.json", function (json) {
+        //     // console.log(json); // this will show the info it in firebug console
+        //     myTyphoonPath = json.rows;
+        //     console.log(myTyphoonPath);
+        //     onCarmenPathDataUpdated();
+        // });
+        // console.log(files);
+
+
+        require(['fs'], function (fs) {
+                var files = fs.readdirSync(dirPath);
+                console.log(files);
+            }
+        );
+    }
+});
 </script>
 <script>
-    //设置台风颜色
-    function setTyphoonColor(typhoonPower) {
-        switch (typhoonPower) {
-            case 0:
-                powerColor = 'blue';
-                break;
-            case 1:
-                powerColor = 'green';
-                break;
-            case 2:
-                powerColor = 'green';
-                break;
-            case 3:
-                powerColor = 'yellow';
-                break;
-            case 4:
-                powerColor = 'orange';
-                break;
-            case 5:
-                powerColor = 'purple';
-                break;
-            case 6:
-                powerColor = 'red';
-                break;
-            case 9:
-                powerColor = 'black';
-                break;
-            default:
-                powerColor = 'white';
-                break;
+//设置台风颜色
+function setTyphoonColor(typhoonPower) {
+    switch (typhoonPower) {
+        case 0:
+            powerColor = 'blue';
+            break;
+        case 1:
+            powerColor = 'green';
+            break;
+        case 2:
+            powerColor = 'green';
+            break;
+        case 3:
+            powerColor = 'yellow';
+            break;
+        case 4:
+            powerColor = 'orange';
+            break;
+        case 5:
+            powerColor = 'purple';
+            break;
+        case 6:
+            powerColor = 'red';
+            break;
+        case 9:
+            powerColor = 'black';
+            break;
+        default:
+            powerColor = 'white';
+            break;
+    }
+    return powerColor;
+}
+
+//设置播放台风路径动画
+function displayTyphoonPath(selectedTyphoon) {
+    // TODO
+}
+
+//选择要播放的台风
+function selectedTyphoon(userSelected) {
+    // TODO
+}
+
+//地图初始化
+function mapInit() {
+    var mymap = L.map('mapid').setView([39.92, 116.46], 3);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: '哈尔滨工业大学（深圳）计算机学院企业智能实验室',
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoiZHVhbnppaGFvIiwiYSI6ImNranZkNDZwNjA3dTIycG9hbjR6dGh5c3UifQ.ROEqcBmPSbuqfBW6AQZrYg'
+    }).addTo(mymap);
+    return mymap;
+}
+
+var mymap = mapInit();
+var myTyphoonPath = undefined;
+
+$.getJSON("../data/1949/Della.json", function (json) {
+    // console.log(json); // this will show the info it in firebug console
+    myTyphoonPath = json.rows;
+    console.log(myTyphoonPath);
+    onCarmenPathDataUpdated();
+});
+
+function onCarmenPathDataUpdated() {
+    //台风点序列：用于存储台风的相关信息，由于leaflet很多传参不好实现，使用全局变量的方式进行变量的读取
+    var pointList = [];
+    //对台风数据中的每个点都在地图上进行设置
+    for (var i = 0; i < myTyphoonPath.length; i++) {
+        // var power = myTyphoonPath[i].power;
+        // var time = myTyphoonPath[i].date;
+        var powercolor = setTyphoonColor(myTyphoonPath[i].power);
+
+        var circle = L.circle([myTyphoonPath[i].lat, myTyphoonPath[i].lng], 30000, {
+            color: powercolor,
+            fillColor: powercolor,
+            fillOpacity: 0.5,
+            radius: 500
+        }).addTo(mymap).on("click", function (e) {
+            var clickedCircle = e.target;
+            clickedCircle.bindPopup(
+                "台风的信息:" + '<br>' +
+                "<br>位置：" + e.latlng + "</br>" +
+                "<br>时间：" + this.date + "</br>" +
+                "<br>强度：" + this.power + "</br>"
+            ).openPopup();
+        }, myTyphoonPath[i]);
+        var point = {
+            index: i,
+            _circle: circle,
+            _time: myTyphoonPath[i].date,
+            _power: myTyphoonPath[i].power
+        };
+        pointList.push(point);
+        //向地图中画线
+        if (i !== 0) {
+            const polygon = L.polygon([
+                    [myTyphoonPath[i].lat, myTyphoonPath[i].lng],
+                    [myTyphoonPath[i - 1].lat, myTyphoonPath[i - 1].lng]
+                ],
+                {
+                    color: 'black'
+                }).addTo(mymap);
+
         }
-        return powerColor;
     }
 
-    //设置播放台风路径动画
-    function displayTyphoonPath(selectedTyphoon) {
-        ;
-    }
+}
 
-    //选择要播放的台风
-    function selectedTyphoon(userSelected) {
-        ;
-    }
-
-    //地图初始化
-    function mapInit() {
-        var mymap = L.map('mapid').setView([39.92, 116.46], 3);
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: '哈尔滨工业大学（深圳）计算机学院企业智能实验室',
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoiZHVhbnppaGFvIiwiYSI6ImNranZkNDZwNjA3dTIycG9hbjR6dGh5c3UifQ.ROEqcBmPSbuqfBW6AQZrYg'
-        }).addTo(mymap);
-        return mymap;
-    }
-
-    var mymap = mapInit();
-    var myTyphoonPath = undefined;
-
-    $.getJSON("../data/1949/Della.json", function (json) {
-        // console.log(json); // this will show the info it in firebug console
-        myTyphoonPath = json.rows;
-        console.log(myTyphoonPath);
-        onCarmenPathDataUpdated();
-    });
-
-    function onCarmenPathDataUpdated(){
-        //台风点序列：用于存储台风的相关信息，由于leaflet很多传参不好实现，使用全局变量的方式进行变量的读取
-        var pointList = [];
-        //对台风数据中的每个点都在地图上进行设置
-        for (var i = 0; i < myTyphoonPath.length; i++) {
-            // var power = myTyphoonPath[i].power;
-            // var time = myTyphoonPath[i].date;
-            var powercolor = setTyphoonColor(myTyphoonPath[i].power);
-
-            var circle = L.circle([myTyphoonPath[i].lat, myTyphoonPath[i].lng], 30000, {
-                color: powercolor,
-                fillColor: powercolor,
-                fillOpacity: 0.5,
-                radius: 500
-            }).addTo(mymap).on("click", function (e) {
-                var clickedCircle = e.target;
-                clickedCircle.bindPopup(
-                    "台风的信息:" + '<br>' +
-                    "<br>位置：" + e.latlng + "</br>" +
-                    "<br>时间：" + this.date + "</br>" +
-                    "<br>强度：" + this.power + "</br>"
-                ).openPopup();
-            }, myTyphoonPath[i]);
-            var point = {
-                index: i,
-                _circle: circle,
-                _time: myTyphoonPath[i].date,
-                _power: myTyphoonPath[i].power
-            };
-            pointList.push(point);
-            //向地图中画线
-            if (i !== 0) {
-                const polygon = L.polygon([
-                        [myTyphoonPath[i].lat, myTyphoonPath[i].lng],
-                        [myTyphoonPath[i - 1].lat, myTyphoonPath[i - 1].lng]
-                    ],
-                    {
-                        color: 'black'
-                    }).addTo(mymap);
-
-            }
-        }
-
-    }
-
-    // 在页面上添加点击动作
-    // 点击地图任意位置，显示出当前位置的经纬度
-    const positionPopup = L.popup();
-    mymap.on('click', function (e) {
-        positionPopup.setLatLng(e.latlng)
-            .setContent("你点击在了地图的 " + e.latlng.toString())
-            .openOn(mymap);
-    });
+// 在页面上添加点击动作
+// 点击地图任意位置，显示出当前位置的经纬度
+const positionPopup = L.popup();
+mymap.on('click', function (e) {
+    positionPopup.setLatLng(e.latlng)
+        .setContent("你点击在了地图的 " + e.latlng.toString())
+        .openOn(mymap);
+});
 </script>
 </body>
 </html>
