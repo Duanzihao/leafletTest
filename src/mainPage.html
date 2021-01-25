@@ -196,7 +196,8 @@ $.getJSON("../data/1949/Della.json", function (json) {
     // console.log(json); // this will show the info it in firebug console
     myTyphoonPath = json.rows;
     console.log(myTyphoonPath);
-    onTyphoonPathDataUpdated();
+    //onTyphoonPathDataUpdated();
+    testPath();
 });
 
 function onTyphoonPathDataUpdated() {
@@ -204,13 +205,10 @@ function onTyphoonPathDataUpdated() {
     var pointList = [];
     //对台风数据中的每个点都在地图上进行设置
     for (var i = 0; i < myTyphoonPath.length; i++) {
-        // var power = myTyphoonPath[i].power;
-        // var time = myTyphoonPath[i].date;
-        var powercolor = setTyphoonColor(myTyphoonPath[i].power);
-
+        var powerColor = setTyphoonColor(myTyphoonPath[i].power);
         var circle = L.circle([myTyphoonPath[i].lat, myTyphoonPath[i].lng], 30000, {
-            color: powercolor,
-            fillColor: powercolor,
+            color: powerColor,
+            fillColor: powerColor,
             fillOpacity: 0.5,
             radius: 500
         }).addTo(mymap).on("click", function (e) {
@@ -218,7 +216,7 @@ function onTyphoonPathDataUpdated() {
             clickedCircle.bindPopup(
                 "台风的信息:" + '<br>' +
                 "<br>位置：" + e.latlng + "</br>" +
-                "<br>时间：" + this.date + "</br>" +
+                "<br>时间：" + this.time + "</br>" +
                 "<br>强度：" + this.power + "</br>"
             ).openPopup();
         }, myTyphoonPath[i]);
@@ -238,11 +236,43 @@ function onTyphoonPathDataUpdated() {
                 {
                     color: 'black'
                 }).addTo(mymap);
-
         }
     }
-
 }
+
+//用来动态展示台风路径，不过目前做的有些失败
+function testPath() {
+    for (var i = 0; i < myTyphoonPath.length; i++) {
+        var powerColor = setTyphoonColor(myTyphoonPath[i].power);
+        setTimeout(function (i, powerColor) {
+            var circle = L.circle([myTyphoonPath[i].lat, myTyphoonPath[i].lng], 30000, {
+                color: powerColor,
+                fillColor: powerColor,
+                fillOpacity: 0.5,
+                radius: 500
+            }).addTo(mymap).on("click", function (e) {
+                var clickedCircle = e.target;
+                clickedCircle.bindPopup(
+                    "台风的信息:" + '<br>' +
+                    "<br>位置：" + e.latlng + "</br>" +
+                    "<br>时间：" + this.time + "</br>" +
+                    "<br>强度：" + this.power + "</br>"
+                ).openPopup();
+            }, myTyphoonPath[i]);
+            //向地图中画线
+            if (i !== 0) {
+                const polygon = L.polygon([
+                        [myTyphoonPath[i].lat, myTyphoonPath[i].lng],
+                        [myTyphoonPath[i - 1].lat, myTyphoonPath[i - 1].lng]
+                    ],
+                    {
+                        color: 'black'
+                    }).addTo(mymap);
+            }
+        }, 20000, i, powerColor);
+    }
+}
+
 
 // 在页面上添加点击动作
 // 点击地图任意位置，显示出当前位置的经纬度
