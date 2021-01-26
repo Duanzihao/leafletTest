@@ -16,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../lib/leaflet/leaflet.css"/>
     <script src="../lib/leaflet/leaflet.js"></script>
-    <script src="../lib/require.js"></script>
+    <!--    <script src="../lib/require.js"></script>-->
     <style>
     * {
         margin: 0;
@@ -82,8 +82,8 @@ window.onload = function () {
 </script>
 
 <script>
-var promises = require('fs/promises')
-var fs = require('C:\\Users\\lenovo\\AppData\\Roaming\\JetBrains\\WebStorm2020.3\\javascript\\nodejs\\14.15.4\\core-modules\\fs.js')
+// var promises = require('fs/promises')
+// var fs = require('C:\\Users\\lenovo\\AppData\\Roaming\\JetBrains\\WebStorm2020.3\\javascript\\nodejs\\14.15.4\\core-modules\\fs.js')
 // 本脚本用于处理点击到的台风的信息
 var clickVal = 1;
 var targetYear = 0;
@@ -94,44 +94,12 @@ $("#targetYear").click(function (e) {
     if (clickVal === 1) {
         //此时表明是用户真正想选择的年份
         targetYear = clickTarget;
+        console.log(targetYear);
         // 之后获取相关台风的名称
         var dirPath = "../data/" + targetYear + "/";
-        // require(['fs'], function (fs) {
-        // var files = getFilesName(dirPath);
-        // console.log(files);
-        // })
-
-
-        // define(
-        //     function (require) {
-        //         var fs = require('fs');
-        //     }
-        // );
-        // var fs = require('fs');
-        // var files = fs.readdirSync(dirPath);
-        // console.log(files);
-
-
-        // var fs = require('fs');
-        // var files = fs.readdirSync(dirPath);
-        // $.getJSON("../data/1949/Della.json", function (json) {
-        //     // console.log(json); // this will show the info it in firebug console
-        //     myTyphoonPath = json.rows;
-        //     console.log(myTyphoonPath);
-        //     onCarmenPathDataUpdated();
-        // });
-        // console.log(files);
-
-
-        require(['fs'], function (fs) {
-                var files = fs.readdirSync(dirPath);
-                console.log(files);
-            }
-        );
     }
 });
-</script>
-<script>
+
 //设置台风颜色
 function setTyphoonColor(typhoonPower) {
     switch (typhoonPower) {
@@ -196,6 +164,7 @@ $.getJSON("../data/1949/Della.json", function (json) {
     // console.log(json); // this will show the info it in firebug console
     myTyphoonPath = json.rows;
     console.log(myTyphoonPath);
+    //用来画台风路径的函数;
     //onTyphoonPathDataUpdated();
     testPath();
 });
@@ -242,35 +211,41 @@ function onTyphoonPathDataUpdated() {
 
 //用来动态展示台风路径，不过目前做的有些失败
 function testPath() {
-    for (var i = 0; i < myTyphoonPath.length; i++) {
-        var powerColor = setTyphoonColor(myTyphoonPath[i].power);
-        setTimeout(function (i, powerColor) {
-            var circle = L.circle([myTyphoonPath[i].lat, myTyphoonPath[i].lng], 30000, {
-                color: powerColor,
-                fillColor: powerColor,
-                fillOpacity: 0.5,
-                radius: 500
-            }).addTo(mymap).on("click", function (e) {
-                var clickedCircle = e.target;
-                clickedCircle.bindPopup(
-                    "台风的信息:" + '<br>' +
-                    "<br>位置：" + e.latlng + "</br>" +
-                    "<br>时间：" + this.time + "</br>" +
-                    "<br>强度：" + this.power + "</br>"
-                ).openPopup();
-            }, myTyphoonPath[i]);
-            //向地图中画线
-            if (i !== 0) {
-                const polygon = L.polygon([
-                        [myTyphoonPath[i].lat, myTyphoonPath[i].lng],
-                        [myTyphoonPath[i - 1].lat, myTyphoonPath[i - 1].lng]
-                    ],
-                    {
-                        color: 'black'
-                    }).addTo(mymap);
-            }
-        }, 20000, i, powerColor);
-    }
+    var counti = 0;
+    var painter = setInterval(function () {
+        console.log('outi:' + counti);
+        if (counti === myTyphoonPath.length) {
+            console.log('计时器关闭');
+            clearInterval(painter);
+        }
+        var powerColor = setTyphoonColor(myTyphoonPath[counti].power);
+        var circle = L.circle([myTyphoonPath[counti].lat, myTyphoonPath[counti].lng], 30000, {
+            color: powerColor,
+            fillColor: powerColor,
+            fillOpacity: 0.5,
+            radius: 500
+        }).addTo(mymap).on("click", function (e) {
+            var clickedCircle = e.target;
+            clickedCircle.bindPopup(
+                "台风的信息:" + '<br>' +
+                "<br>位置：" + e.latlng + "</br>" +
+                "<br>时间：" + this.time + "</br>" +
+                "<br>强度：" + this.power + "</br>"
+            ).openPopup();
+        }, myTyphoonPath[counti]);
+        //向地图中画线
+        if (counti !== 0) {
+            const polygon = L.polygon([
+                    [myTyphoonPath[counti].lat, myTyphoonPath[counti].lng],
+                    [myTyphoonPath[counti - 1].lat, myTyphoonPath[counti - 1].lng]
+                ],
+                {
+                    color: 'black'
+                }).addTo(mymap);
+        }
+        // console.log('i:' + i);
+        counti++;
+    }, 500);
 }
 
 
